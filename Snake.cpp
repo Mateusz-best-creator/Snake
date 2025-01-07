@@ -15,7 +15,7 @@ void Snake::reset()
     head = snake_squares[snake_squares.size() - 1];
 }
 
-void Snake::update(MovingDirection d, bool collision)
+void Snake::update(MovingDirection d)
 {
     //std::cout << "DIR = " << char(current_moving_direction) << std::endl;
     if (!(current_moving_direction == MovingDirection::LEFT && d == MovingDirection::RIGHT ||
@@ -57,8 +57,8 @@ void Snake::update(MovingDirection d, bool collision)
     if (new_point.square_col < 0)
         new_point.square_col = NUMBER_VERTICAL_SQUARES - 1;
 
-    if (!collision)
-        this->snake_squares.erase(snake_squares.begin());
+    last_snake_square = snake_squares.at(0);
+    this->snake_squares.erase(this->snake_squares.begin());
     this->snake_squares.push_back(new_point);
 }
 
@@ -96,4 +96,11 @@ Point& Snake::get_head()
 const std::vector<Point>& Snake::get_snake_squares() const
 {
     return this->snake_squares;
+}
+
+void Snake::update_back(bool colission)
+{
+    if (colission == false)
+        return;
+    this->snake_squares.insert(snake_squares.begin(), this->last_snake_square);
 }

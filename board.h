@@ -19,18 +19,26 @@ private:
 	sf::Font font;
 	sf::Color font_color = sf::Color::White;
 
-	std::vector<Point> fruits_points = { {1,1}, {18, 18} };
+	std::vector<Point> fruits_points = { {1,1}, {18, 18} }, bomb_points = { {2,2}, {15, 12} };
 	sf::RectangleShape fruit_square;
+	sf::RectangleShape bomb_square;
 	sf::Texture fruit_texture;
+	sf::Texture bomb_texture;
+
+	std::vector<std::vector<char>> grid;
 
 public:
 	Board();
 	void draw_board(sf::RenderWindow&);
 	void draw_top_info(sf::RenderWindow&, const std::string&);
 	bool check_fruit_snake_collision(Point& head);
-	void add_fruit(const std::vector<Point>&);
+	void add_fruit();
+	void add_bomb();
 
 	int get_points();
 	void set_points(int);
 	void reset();
+	void remove_last_snake(const Snake&);
+	void update_grid_snake(const Snake&);
+	void play_fruit_grabbing_sound();
 };

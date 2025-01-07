@@ -62,7 +62,6 @@ public:
 	Game();
 
 	void game_loop(int level);
-	void play(sf::RenderWindow& window);
 	void draw(sf::RenderWindow& window);
 	void set_moving_direction(Snake::MovingDirection);
 

@@ -27,11 +27,13 @@ private:
 	MovingDirection current_moving_direction;
 	Point head;
 	const int SCREEN_SLEEP_TIME = 90;
+	Point last_snake_square;
 
 public:
 	Snake();
 	void reset();
-	void update(MovingDirection, bool);
+	void update(MovingDirection);
+	void update_back(bool);
 	void draw(sf::RenderWindow&);
 	bool lost();
 	Point& get_head();

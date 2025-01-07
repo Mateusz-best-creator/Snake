@@ -4,6 +4,7 @@
 #include <ctime> 
 
 Board::Board()
+    : grid(20, std::vector<char>(20, '-'))
 {
     this->points = 0;
     if (font.loadFromFile("Alphabet.ttf"))
@@ -15,25 +16,49 @@ Board::Board()
     }
     if (!fruit_texture.loadFromFile("fruit.png"))
     {
-        std::cerr << "Cannot load font .ttf file\n";
+        std::cerr << "Cannot load fruit png file\n";
         exit(0);
     }
     else
         std::cout << "Succesfully load fruit image..." << std::endl;
+    if (!bomb_texture.loadFromFile("bomb.png"))
+    {
+        std::cerr << "Cannot load bomb png file\n";
+        exit(0);
+    }
+    else
+        std::cout << "Succesfully load bomb image..." << std::endl;
     fruit_texture.setSmooth(true);
     fruit_texture.setRepeated(false);
     fruit_square.setSize(sf::Vector2f(SQUARE_SIZE, SQUARE_SIZE));
     fruit_square.setTexture(&fruit_texture);
+
+    bomb_texture.setSmooth(true);
+    bomb_texture.setRepeated(false);
+    bomb_square.setSize(sf::Vector2f(SQUARE_SIZE, SQUARE_SIZE));
+    bomb_square.setTexture(&bomb_texture);
 
     points_text.setFont(font);
     points_text.setString("Points: " + std::to_string(this->points));
     points_text.setCharacterSize(SCORE_FONT_SIZE);
     points_text.setFillColor(this->font_color);
     points_text.setPosition(sf::Vector2f(SCREEN_WIDTH / 2 - SCORE_FONT_SIZE, 30));
+
+
 }
 
 void Board::draw_board(sf::RenderWindow& window)
-{
+{/*
+    for (int row = 0; row < 20; row++)
+    {
+        for (int col = 0; col < 20; col++)
+        {
+            std::cout << grid[row][col] << " ";
+        }
+        std::cout << "\n";
+    }
+    std::cout << "\n\n";*/
+
     sf::VertexArray vertical_lines(sf::Lines, NUMBER_VERTICAL_SQUARES * 2);
     sf::VertexArray horizontal_lines(sf::Lines, NUMBER_HORIZONTAL_SQUARES * 2);
 
@@ -49,23 +74,33 @@ void Board::draw_board(sf::RenderWindow& window)
         horizontal_lines[i * 2] = sf::Vertex(sf::Vector2f(x_pos, 200));
         horizontal_lines[i * 2 + 1] = sf::Vertex(sf::Vector2f(x_pos, SCREEN_HEIGHT));
     }
-    //this->points++;
-    for (int i = 0; i < fruits_points.size(); i++)
+    for (int row = 0; row < 20; row++)
     {
-        float x_pos = fruits_points[i].square_col * SQUARE_SIZE;
-        float y_pos = 200 + fruits_points[i].square_row * SQUARE_SIZE;
-        fruit_square.setPosition(sf::Vector2f(x_pos, y_pos));
-
-        window.draw(fruit_square);
+        for (int col = 0; col < 20; col++)
+        {
+            if (grid[row][col] == 'f')
+            {
+                float x_pos = col * SQUARE_SIZE;
+                float y_pos = 200 + row * SQUARE_SIZE;
+                fruit_square.setPosition(sf::Vector2f(x_pos, y_pos));
+                window.draw(fruit_square);
+            }
+            else if (grid[row][col] == 'b')
+            {
+                float x_pos = col * SQUARE_SIZE;
+                float y_pos = 200 + row * SQUARE_SIZE;
+                fruit_square.setPosition(sf::Vector2f(x_pos, y_pos));
+                window.draw(bomb_square);
+            }
+        }
     }
-
     window.draw(vertical_lines);
     window.draw(horizontal_lines);
 }
 
 void Board::draw_top_info(sf::RenderWindow& window, const std::string& msg)
 {
-    points_text.setString("Points: " + std::to_string(points));
+    points_text.setString("Points: " + std::to_string(this->points));
     if (msg.size())
         points_text.setString(msg);
     window.draw(points_text);
@@ -73,23 +108,30 @@ void Board::draw_top_info(sf::RenderWindow& window, const std::string& msg)
 
 bool Board::check_fruit_snake_collision(Point& head)
 {
+    Point new_point = head;
+    if (new_point.square_row >= NUMBER_HORIZONTAL_SQUARES)
+        head.square_row = 0;
+    if (new_point.square_row < 0)
+        head.square_row = NUMBER_HORIZONTAL_SQUARES - 1;
+    if (new_point.square_col >= NUMBER_VERTICAL_SQUARES)
+        head.square_col = 0;
+    if (new_point.square_col < 0)
+        head.square_col = NUMBER_VERTICAL_SQUARES - 1;
+
     Point snake_head = head;
-    for (int i = 0; i < fruits_points.size(); i++)
+    int row = snake_head.square_row;
+    int col = snake_head.square_col;
+    if (grid[row][col] == 'f')
     {
-        int fruit_row = fruits_points[i].square_row;
-        int fruit_col = fruits_points[i].square_col;
-        if (snake_head.square_col == fruit_col &&
-            snake_head.square_row == fruit_row)
-        {
-            fruits_points.erase(fruits_points.begin() + i);
-            this->points++;
-            return true;
-        }
+        std::cout << "Kolizja!\n";
+        this->play_fruit_grabbing_sound();
+        this->points += 1;
+        return true;
     }
     return false;
 }
 
-void Board::add_fruit(const std::vector<Point>& snake_occupied_squares)
+void Board::add_fruit()
 {
     srand((unsigned)time(0));
 
@@ -101,33 +143,28 @@ void Board::add_fruit(const std::vector<Point>& snake_occupied_squares)
     {
         row = (rand() % NUMBER_VERTICAL_SQUARES);
         column = (rand() % NUMBER_HORIZONTAL_SQUARES);
-
-        bool is_occupied_by_snake = false;
-        for (int i = 0; i < snake_occupied_squares.size(); i++)
-        {
-            if (snake_occupied_squares[i].square_row == row &&
-                snake_occupied_squares[i].square_col == column)
-            {
-                is_occupied_by_snake = true;
-                break;
-            }
-        }
-        bool is_occupied_by_fruit = false;
-        for (int i = 0; i < fruits_points.size(); i++)
-        {
-            if (fruits_points[i].square_row == row &&
-                fruits_points[i].square_col == column)
-            {
-                is_occupied_by_fruit = true;
-                break;
-            }
-        }
-
-        if (!is_occupied_by_snake && !is_occupied_by_fruit)
+        if (grid[row][column] == '-')
             run = false;
     }
-    //std::cout << "Random = " << row << ", " << column << "\n";
-    this->fruits_points.push_back({ row, column });
+    this->grid[row][column] = 'f';
+}
+
+void Board::add_bomb()
+{
+    srand((unsigned)time(0));
+
+    bool run = true;
+    int row;
+    int column;
+
+    while (run)
+    {
+        row = (rand() % NUMBER_VERTICAL_SQUARES);
+        column = (rand() % NUMBER_HORIZONTAL_SQUARES);
+        if (grid[row][column] == '-')
+            run = false;
+    }
+    this->grid[row][column] = 'b';
 }
 
 int Board::get_points()
@@ -143,4 +180,31 @@ void Board::set_points(int p)
 void Board::reset()
 {
     this->fruits_points.clear();
+}
+
+void Board::remove_last_snake(const Snake& snake)
+{
+    std::vector<Point> points = snake.get_snake_squares();
+    for (int i = 0; i < points.size(); i++)
+    {
+        int row = points.at(i).square_row;
+        int col = points.at(i).square_col;
+        grid[row][col] = '-';
+    }
+}
+
+void Board::update_grid_snake(const Snake& snake)
+{
+    std::vector<Point> points = snake.get_snake_squares();
+    for (int i = 0; i < snake.get_snake_squares().size(); i++)
+    {
+        int row = points.at(i).square_row;
+        int col = points.at(i).square_col;
+        grid[row][col] = 's';
+    }
+}
+
+void Board::play_fruit_grabbing_sound()
+{
+
 }

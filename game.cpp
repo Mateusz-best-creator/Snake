@@ -90,11 +90,6 @@ Game::Game()
     name_text_start.setFillColor(sf::Color::White);
 }
 
-void Game::play(sf::RenderWindow& window)
-{
-    this->draw(window);
-}
-
 void Game::main_page()
 {
     States current_state = States::DEFAULT;
@@ -258,7 +253,6 @@ void Game::game_loop(int level)
                     moving_direction = Snake::MovingDirection::RIGHT;
             }
         }
-
         if (snake.lost())
         {
             lost = true;
@@ -279,11 +273,11 @@ void Game::game_loop(int level)
         if (duration_time > 0 && duration_time % TIME_TO_GENERATE_FRUIT == 0)
         {
             start = std::chrono::high_resolution_clock::now();
-            board.add_fruit(snake.get_snake_squares());
+            board.add_fruit();
         }
 
         window.clear(BACKGROUND_COLOR);
-        play(window);
+        this->draw(window);
         window.display();
     }
     snake.reset();
@@ -294,8 +288,11 @@ void Game::draw(sf::RenderWindow& window)
 {
     board.draw_board(window);
     board.draw_top_info(window, "");
+    board.remove_last_snake(snake);
+    snake.update(moving_direction);
     bool collision = board.check_fruit_snake_collision(snake.get_head());
-    snake.update(moving_direction, collision);
+    snake.update_back(collision);
+    board.update_grid_snake(snake);
     snake.draw(window);
 }
 
