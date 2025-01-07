@@ -84,8 +84,8 @@ bool Snake::lost()
     for (int i = 0; i < snake_squares.size() - 1; i++)
         if (head.square_col == snake_squares[i].square_col &&
             head.square_row == snake_squares[i].square_row)
-            return true;
-    return false;
+            lost_the_game = true;
+    return lost_the_game;
 }
 
 Point& Snake::get_head()
@@ -103,4 +103,10 @@ void Snake::update_back(bool colission)
     if (colission == false)
         return;
     this->snake_squares.insert(snake_squares.begin(), this->last_snake_square);
+}
+
+void Snake::set_lost(bool lost)
+{
+    if (lost)
+        this->lost_the_game = true;
 }

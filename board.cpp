@@ -89,7 +89,7 @@ void Board::draw_board(sf::RenderWindow& window)
             {
                 float x_pos = col * SQUARE_SIZE;
                 float y_pos = 200 + row * SQUARE_SIZE;
-                fruit_square.setPosition(sf::Vector2f(x_pos, y_pos));
+                bomb_square.setPosition(sf::Vector2f(x_pos, y_pos));
                 window.draw(bomb_square);
             }
         }
@@ -123,7 +123,6 @@ bool Board::check_fruit_snake_collision(Point& head)
     int col = snake_head.square_col;
     if (grid[row][col] == 'f')
     {
-        std::cout << "Kolizja!\n";
         this->play_fruit_grabbing_sound();
         this->points += 1;
         return true;
@@ -131,8 +130,23 @@ bool Board::check_fruit_snake_collision(Point& head)
     return false;
 }
 
+bool Board::check_bomb_snake_collision(Point& head)
+{
+    Point snake_head = head;
+    int row = snake_head.square_row;
+    int col = snake_head.square_col;
+    if (grid[row][col] == 'b')
+    {
+        this->play_bomb_sound();
+        return true;
+    }
+    return false;
+}
+
 void Board::add_fruit()
 {
+    if (this->fruit_amount >= MAX_FRUITS)
+        return;
     srand((unsigned)time(0));
 
     bool run = true;
@@ -147,10 +161,13 @@ void Board::add_fruit()
             run = false;
     }
     this->grid[row][column] = 'f';
+    this->fruit_amount++;
 }
 
 void Board::add_bomb()
 {
+    if (this->bomb_amount >= MAX_BOMBS)
+        return;
     srand((unsigned)time(0));
 
     bool run = true;
@@ -165,6 +182,7 @@ void Board::add_bomb()
             run = false;
     }
     this->grid[row][column] = 'b';
+    this->bomb_amount++;
 }
 
 int Board::get_points()
@@ -179,7 +197,9 @@ void Board::set_points(int p)
 
 void Board::reset()
 {
-    this->fruits_points.clear();
+    for (int i = 0; i < grid.size(); i++)
+        for (int j = 0; j < grid[i].size(); j++)
+            grid[i][j] = '-';
 }
 
 void Board::remove_last_snake(const Snake& snake)
@@ -205,6 +225,11 @@ void Board::update_grid_snake(const Snake& snake)
 }
 
 void Board::play_fruit_grabbing_sound()
+{
+
+}
+
+void Board::play_bomb_sound()
 {
 
 }

@@ -28,6 +28,7 @@ private:
 	Point head;
 	const int SCREEN_SLEEP_TIME = 90;
 	Point last_snake_square;
+	bool lost_the_game = false;
 
 public:
 	Snake();
@@ -36,6 +37,7 @@ public:
 	void update_back(bool);
 	void draw(sf::RenderWindow&);
 	bool lost();
+	void set_lost(bool);
 	Point& get_head();
 	const std::vector<Point>& get_snake_squares() const;
 };

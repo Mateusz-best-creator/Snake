@@ -256,8 +256,11 @@ void Game::game_loop(int level)
         if (snake.lost())
         {
             lost = true;
+            Sleep(500);
+            window.clear();
             board.draw_top_info(window, "You Lost!");
             window.display();
+            Sleep(2500);
 
             if (player_playing_index != -1)
             {
@@ -274,6 +277,7 @@ void Game::game_loop(int level)
         {
             start = std::chrono::high_resolution_clock::now();
             board.add_fruit();
+            board.add_bomb();
         }
 
         window.clear(BACKGROUND_COLOR);
@@ -291,6 +295,8 @@ void Game::draw(sf::RenderWindow& window)
     board.remove_last_snake(snake);
     snake.update(moving_direction);
     bool collision = board.check_fruit_snake_collision(snake.get_head());
+    bool end_game = board.check_bomb_snake_collision(snake.get_head());
+    if (end_game) snake.set_lost(true);
     snake.update_back(collision);
     board.update_grid_snake(snake);
     snake.draw(window);
