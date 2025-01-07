@@ -280,9 +280,12 @@ void Game::game_loop(int level)
             board.add_bomb();
         }
 
-        window.clear(BACKGROUND_COLOR);
-        this->draw(window);
-        window.display();
+        if (!snake.lost())
+        {
+            window.clear(BACKGROUND_COLOR);
+            this->draw(window);
+            window.display();
+        }
     }
     snake.reset();
     board.reset();
@@ -344,7 +347,11 @@ void Game::hall_of_fame_page(sf::RenderWindow& window)
         sf::Color(255, 105, 180)  // Hot Pink
     };
 
-    //std::cout << instruction_rectangle.getSize().x << " " << instruction_rectangle.getSize().y << std::endl;
+    std::sort(playing_players.begin(), playing_players.end(),
+        [](const Player& a, const Player& b) 
+        {
+            return (a.points > b.points) || (a.points == b.points && a.games_played < b.games_played);
+        });
 
     for (int i = 0; i < min(5, playing_players.size()); i++)
     {
@@ -362,7 +369,6 @@ void Game::hall_of_fame_page(sf::RenderWindow& window)
         y_pos[i] = 110 + i * change;
 
     std::vector<sf::Text> texts_players;
-
     for (int i = 0; i < playing_players.size(); i++)
     {
         Player player = playing_players.at(i);

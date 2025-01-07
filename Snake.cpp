@@ -13,11 +13,11 @@ void Snake::reset()
     this->snake_squares = { {10,8}, {10, 9}, {10, 10} };
     this->current_moving_direction = MovingDirection::RIGHT;
     head = snake_squares[snake_squares.size() - 1];
+    this->lost_the_game = false;
 }
 
 void Snake::update(MovingDirection d)
 {
-    //std::cout << "DIR = " << char(current_moving_direction) << std::endl;
     if (!(current_moving_direction == MovingDirection::LEFT && d == MovingDirection::RIGHT ||
         current_moving_direction == MovingDirection::RIGHT && d == MovingDirection::LEFT ||
         current_moving_direction == MovingDirection::TOP && d == MovingDirection::BOTTOM ||

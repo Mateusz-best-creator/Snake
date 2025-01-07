@@ -48,17 +48,7 @@ Board::Board()
 }
 
 void Board::draw_board(sf::RenderWindow& window)
-{/*
-    for (int row = 0; row < 20; row++)
-    {
-        for (int col = 0; col < 20; col++)
-        {
-            std::cout << grid[row][col] << " ";
-        }
-        std::cout << "\n";
-    }
-    std::cout << "\n\n";*/
-
+{
     sf::VertexArray vertical_lines(sf::Lines, NUMBER_VERTICAL_SQUARES * 2);
     sf::VertexArray horizontal_lines(sf::Lines, NUMBER_HORIZONTAL_SQUARES * 2);
 
@@ -200,6 +190,8 @@ void Board::reset()
     for (int i = 0; i < grid.size(); i++)
         for (int j = 0; j < grid[i].size(); j++)
             grid[i][j] = '-';
+    this->points = 0;
+    fruit_amount = bomb_amount = 0;
 }
 
 void Board::remove_last_snake(const Snake& snake)
