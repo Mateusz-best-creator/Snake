@@ -44,7 +44,18 @@ Board::Board()
     points_text.setFillColor(this->font_color);
     points_text.setPosition(sf::Vector2f(SCREEN_WIDTH / 2 - SCORE_FONT_SIZE, 30));
 
-
+    if (!fruit_buffer.loadFromFile("point_beep.mp3"))
+    {
+        std::cerr << "Error loading sound for fruit .mp3\n";
+        exit(0);
+    }
+    if (!bomb_buffer.loadFromFile("bomb_explosion.mp3"))
+    {
+        std::cerr << "Error loading sound for bomb .mp3\n";
+        exit(0);
+    }
+    fruit_sound.setBuffer(fruit_buffer);
+    bomb_sound.setBuffer(bomb_buffer);
 }
 
 void Board::draw_board(sf::RenderWindow& window)
@@ -218,10 +229,10 @@ void Board::update_grid_snake(const Snake& snake)
 
 void Board::play_fruit_grabbing_sound()
 {
-
+    this->fruit_sound.play();
 }
 
 void Board::play_bomb_sound()
 {
-
+    this->bomb_sound.play();
 }

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <chrono>
 #include <cassert>
+#include <algorithm>
 
 Game::Game()
 {

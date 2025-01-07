@@ -3,7 +3,6 @@
 #include "board.h"
 #include "snake.h"
 #include <string>
-#include <algorithm>
 
 const sf::Color StartRectangleColor(128, 128, 128, 255);
 

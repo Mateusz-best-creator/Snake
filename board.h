@@ -1,6 +1,6 @@
 #pragma once
 
-
+#include "SFML/Audio.hpp"
 #include <vector>
 #include "snake.h"
 
@@ -27,6 +27,12 @@ private:
 	std::vector<std::vector<char>> grid;
 	const static int MAX_FRUITS = 15, MAX_BOMBS = 10;
 	int fruit_amount = 0, bomb_amount = 0;
+
+	/*
+		Sound effects
+	*/
+	sf::SoundBuffer fruit_buffer, bomb_buffer;
+	sf::Sound fruit_sound, bomb_sound;
 
 public:
 	Board();
