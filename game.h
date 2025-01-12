@@ -30,6 +30,7 @@ private:
 	enum States
 	{
 		START = 's',
+		START_DUO = 't',
 		REGISTER = 'r',
 		HALL_OF_FAME = 'h',
 		INSTRUCTION = 'i',
@@ -61,7 +62,8 @@ private:
 public:
 	Game();
 
-	void game_loop(int level);
+	void game_loop();
+	void game_loop_duo();
 	void draw(sf::RenderWindow& window);
 	void set_moving_direction(Snake::MovingDirection);
 

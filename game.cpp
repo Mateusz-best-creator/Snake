@@ -14,15 +14,19 @@ Game::Game()
     sf::RectangleShape r2(sf::Vector2f(RECTANGLE_WIDTH, RECTANGLE_HEIGHT));
     sf::RectangleShape r3(sf::Vector2f(RECTANGLE_WIDTH, RECTANGLE_HEIGHT));
     sf::RectangleShape r4(sf::Vector2f(RECTANGLE_WIDTH, RECTANGLE_HEIGHT));
+    sf::RectangleShape r5(sf::Vector2f(RECTANGLE_WIDTH, RECTANGLE_HEIGHT));
+    const float verticalMargin = 40.f;
     r1.setPosition(sf::Vector2f(SCREEN_WIDTH / 2 - RECTANGLE_WIDTH / 2, 100));
-    r2.setPosition(sf::Vector2f(SCREEN_WIDTH / 2 - RECTANGLE_WIDTH / 2, 300));
-    r3.setPosition(sf::Vector2f(SCREEN_WIDTH / 2 - RECTANGLE_WIDTH / 2, 500));
-    r4.setPosition(sf::Vector2f(SCREEN_WIDTH / 2 - RECTANGLE_WIDTH / 2, 700));
+    r2.setPosition(sf::Vector2f(SCREEN_WIDTH / 2 - RECTANGLE_WIDTH / 2, r1.getPosition().y + RECTANGLE_HEIGHT + verticalMargin));
+    r3.setPosition(sf::Vector2f(SCREEN_WIDTH / 2 - RECTANGLE_WIDTH / 2, r2.getPosition().y + RECTANGLE_HEIGHT + verticalMargin));
+    r4.setPosition(sf::Vector2f(SCREEN_WIDTH / 2 - RECTANGLE_WIDTH / 2, r3.getPosition().y + RECTANGLE_HEIGHT + verticalMargin));
+    r5.setPosition(sf::Vector2f(SCREEN_WIDTH / 2 - RECTANGLE_WIDTH / 2, r4.getPosition().y + RECTANGLE_HEIGHT + verticalMargin));
 
     start_rectangles_options.push_back(r1);
     start_rectangles_options.push_back(r2);
     start_rectangles_options.push_back(r3);
     start_rectangles_options.push_back(r4);
+    start_rectangles_options.push_back(r5);
 
     for (auto& e : start_rectangles_options)
     {
@@ -34,8 +38,8 @@ Game::Game()
         exit(0);
 
     int i = 0;
-    std::string texts_strings[4] = { "Start (1)", "Register (2)", "Hall Of Fame (3)", "Instructions (4)" };
-    int y_pos[4] = { 105, 305, 505, 705 };
+    std::string texts_strings[5] = { "Start - solo (1)", "Start - duo (2)", "Register (3)", "Hall Of Fame (4)", "Instructions (5)"};
+    int y_pos[5] = { 105, 225, 345, 462, 582 };
 
     for (int i = 0; i < start_rectangles_options.size(); ++i)
     {
@@ -62,11 +66,10 @@ Game::Game()
     instruction_text.setFillColor(sf::Color::White);
     instruction_text.setCharacterSize(INSTRUCTION_TEXT_SIZE);
     std::string t = "Welcome to the Snake Game!\n"
-        "Use arrow keys to move.\n"
-        "Collect food to get points.\n"
+        "Use arrow keys or a-w-s-d to move.\n"
+        "Play in solo or duo mode.\n"
+        "Collect foods and avoid bombs.\n"
         "Register yourself and compete with others.\n"
-        "Become the champion in the hall of fame!\n"
-        "Enjoy playing!\n\n\n"
         "Click 'Escape' to go back.";
     instruction_text.setString(t);
     sf::FloatRect textBounds = instruction_text.getLocalBounds();
@@ -158,14 +161,17 @@ void Game::main_page()
                     current_state = States::START;
                     break;
                 case sf::Keyboard::Num2:
+                    current_state = States::START_DUO;
+                    break;
+                case sf::Keyboard::Num3:
                     current_state = States::REGISTER;
                     // Reset registered name
                     this->registered_name.clear();
                     break;
-                case sf::Keyboard::Num3:
+                case sf::Keyboard::Num4:
                     current_state = States::HALL_OF_FAME;
                     break;
-                case sf::Keyboard::Num4:
+                case sf::Keyboard::Num5:
                     current_state = States::INSTRUCTION;
                     break;
                 case sf::Keyboard::Escape:
@@ -204,7 +210,15 @@ void Game::main_page()
 
         case States::START:
             window.close();
-            this->game_loop(1);
+            this->game_loop();
+            window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Snake - Mateusz Wieczorek"); // Reopen the window
+            current_state = States::DEFAULT;
+            break;
+
+        case States::START_DUO:
+            std::cout << "Playing duo!\n";
+            window.close();
+            this->game_loop_duo();
             window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Snake - Mateusz Wieczorek"); // Reopen the window
             current_state = States::DEFAULT;
             break;
@@ -229,7 +243,7 @@ void Game::main_page()
 }
 
 
-void Game::game_loop(int level)
+void Game::game_loop()
 {
     auto start = std::chrono::high_resolution_clock::now();
     bool lost = false;
@@ -290,6 +304,11 @@ void Game::game_loop(int level)
     }
     snake.reset();
     board.reset();
+}
+
+void Game::game_loop_duo()
+{
+
 }
 
 void Game::draw(sf::RenderWindow& window)

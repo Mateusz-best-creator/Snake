@@ -81,11 +81,13 @@ void Snake::draw(sf::RenderWindow& window)
 
 bool Snake::lost()
 {
+    if (lost_the_game)
+        return true;
     for (int i = 0; i < snake_squares.size() - 1; i++)
         if (head.square_col == snake_squares[i].square_col &&
             head.square_row == snake_squares[i].square_row)
-            lost_the_game = true;
-    return lost_the_game;
+            return true;
+    return false;
 }
 
 Point& Snake::get_head()
@@ -107,6 +109,5 @@ void Snake::update_back(bool colission)
 
 void Snake::set_lost(bool lost)
 {
-    if (lost)
-        this->lost_the_game = true;
+    this->lost_the_game = lost;
 }
