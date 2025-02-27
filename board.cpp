@@ -148,6 +148,22 @@ bool Board::check_bomb_snake_collision(Point& head)
     return false;
 }
 
+char Board::check_snake_snake_collision(Point& first_head, Point& second_head)
+{
+    if (grid[first_head.square_row][first_head.square_col] == Snake2)
+    {
+        // second win
+        return 's';
+    }
+    if (grid[second_head.square_row][second_head.square_col] == Snake1)
+    {
+        // first win
+        return 'f';
+    }
+    // nothing happened
+    return 'n';
+}
+
 void Board::add_fruit()
 {
     if (this->fruit_amount >= MAX_FRUITS)

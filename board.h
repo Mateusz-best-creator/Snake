@@ -46,12 +46,14 @@ private:
 		Bomb = 'b'
 	};
 
+
 public:
 	Board();
 	void draw_board(sf::RenderWindow&);
 	void draw_top_info(sf::RenderWindow&, const std::string&);
 	bool check_fruit_snake_collision(Point& head);
 	bool check_bomb_snake_collision(Point& head);
+	char check_snake_snake_collision(Point& first_head, Point& second_head);
 	void add_fruit();
 	void add_bomb();
 

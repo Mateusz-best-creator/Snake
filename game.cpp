@@ -383,10 +383,16 @@ void Game::game_loop_duo()
             window.clear(BACKGROUND_COLOR);
             draw(window, snake, moving_direction);
             draw(window, second_snake, second_moving_direction);
+            char snake_end = board.check_snake_snake_collision(snake.get_head(), second_snake.get_head());
+            if (snake_end == 'f')
+                second_snake.set_lost(true);
+            if (snake_end == 's')
+                snake.set_lost(true);
             window.display();
         }
     }
     snake.reset();
+    second_snake.reset();
     board.reset();
 }
 
