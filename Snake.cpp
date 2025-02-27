@@ -124,3 +124,8 @@ void Snake::set_lost(bool lost)
 {
     this->lost_the_game = lost;
 }
+
+void Snake::set_sleep(int s)
+{
+    SCREEN_SLEEP_TIME = s;
+}

@@ -58,6 +58,9 @@ private:
 	int player_playing_index = -1;
 	int previous_playing_player_index = -1;
 	const int HALL_TEXT_FONT_SIZE = 35;
+	const int DUO_SLEEP_TIME = 45;
+	const int SINGLE_SLEEP_TIME = 90;
+	const int EXPERIMENT_SLEEP_TIME = 0;
 
 
 public:
@@ -65,7 +68,7 @@ public:
 
 	void game_loop();
 	void game_loop_duo();
-	void draw(sf::RenderWindow& window, Snake& snake, Snake::MovingDirection dir);
+	void draw(sf::RenderWindow& window, Snake& snake, Snake::MovingDirection dir, bool duo = false);
 	void set_moving_direction(Snake::MovingDirection);
 
 	void main_page();

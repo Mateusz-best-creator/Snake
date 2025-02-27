@@ -14,7 +14,7 @@ private:
 	const double SQUARE_WIDTH = SCREEN_WIDTH / NUMBER_HORIZONTAL_SQUARES;
 
 	const int SCORE_FONT_SIZE = 100;
-	int points;
+	int points, duo_points = -1;
 	sf::Text points_text;
 	sf::Font font;
 	sf::Color font_color = sf::Color::White;
@@ -51,7 +51,7 @@ public:
 	Board();
 	void draw_board(sf::RenderWindow&);
 	void draw_top_info(sf::RenderWindow&, const std::string&);
-	bool check_fruit_snake_collision(Point& head);
+	bool check_fruit_snake_collision(Point& head, bool duo = false);
 	bool check_bomb_snake_collision(Point& head);
 	char check_snake_snake_collision(Point& first_head, Point& second_head);
 	void add_fruit();
@@ -64,4 +64,6 @@ public:
 	void update_grid_snake(const Snake&);
 	void play_fruit_grabbing_sound();
 	void play_bomb_sound();
+	void start_duo_points() { this->duo_points = 0; };
+	void reset_duo_points() { this->duo_points = -1; };
 };

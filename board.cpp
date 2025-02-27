@@ -100,18 +100,20 @@ void Board::draw_board(sf::RenderWindow& window)
 
 void Board::draw_top_info(sf::RenderWindow& window, const std::string& msg)
 {
-    points_text.setString("Points: " + std::to_string(this->points));
     if (msg.size())
-    {
         points_text.setString(msg);
-    }
+    else if (duo_points != -1)
+        points_text.setString("P1 points: " + std::to_string(points) + " P2 points: " + std::to_string(duo_points));
+    else
+        points_text.setString("Points: " + std::to_string(this->points));
+
     float width = points_text.getLocalBounds().width;
     float offset = width / 2.f;
     points_text.setPosition(sf::Vector2f(SCREEN_WIDTH / 2.f - offset, 30));
     window.draw(points_text);
 }
 
-bool Board::check_fruit_snake_collision(Point& head)
+bool Board::check_fruit_snake_collision(Point& head, bool duo)
 {
     Point new_point = head;
     if (new_point.square_row >= NUMBER_HORIZONTAL_SQUARES)
@@ -129,7 +131,14 @@ bool Board::check_fruit_snake_collision(Point& head)
     if (grid[row][col] == Fruit)
     {
         this->play_fruit_grabbing_sound();
-        this->points += 1;
+        if (!duo)
+        {
+            this->points += 1;
+        }
+        else
+        {
+            this->duo_points += 1;
+        }
         return true;
     }
     return false;
@@ -223,6 +232,7 @@ void Board::reset()
             grid[i][j] = Empty;
     this->points = 0;
     fruit_amount = bomb_amount = 0;
+    duo_points = -1;
 }
 
 void Board::remove_last_snake(const Snake& snake)

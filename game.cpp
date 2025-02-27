@@ -161,9 +161,11 @@ void Game::main_page()
                 {
                 case sf::Keyboard::Num1:
                     current_state = States::START;
+                    snake.set_sleep(SINGLE_SLEEP_TIME);
                     break;
                 case sf::Keyboard::Num2:
                     current_state = States::START_DUO;
+                    snake.set_sleep(DUO_SLEEP_TIME);
                     break;
                 case sf::Keyboard::Num3:
                     current_state = States::REGISTER;
@@ -218,7 +220,6 @@ void Game::main_page()
             break;
 
         case States::START_DUO:
-            std::cout << "Playing duo!\n";
             window.close();
             this->game_loop_duo();
             window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Snake - Mateusz Wieczorek"); // Reopen the window
@@ -275,6 +276,7 @@ void Game::game_loop()
             lost = true;
             Sleep(500);
             window.clear();
+            board.reset_duo_points();
             board.draw_top_info(window, "You Lost!");
             window.display();
             Sleep(2500);
@@ -310,7 +312,9 @@ void Game::game_loop()
 
 void Game::game_loop_duo()
 {
+    board.start_duo_points();
     Snake second_snake(true);
+    second_snake.set_sleep(DUO_SLEEP_TIME);
     Snake::MovingDirection second_moving_direction = Snake::RIGHT;
 
     auto start = std::chrono::high_resolution_clock::now();
@@ -353,20 +357,22 @@ void Game::game_loop_duo()
             lost = true;
             Sleep(500);
             window.clear();
-            board.draw_top_info(window, "First Player Lost!");
+            board.draw_top_info(window, "Second Player Win!");
             window.display();
             Sleep(2500);
             board.set_points(0);
+            board.reset_duo_points();
         }
         if (second_snake.lost())
         {
             second_lost = true;
             Sleep(500);
             window.clear();
-            board.draw_top_info(window, "Second Player Lost!");
+            board.draw_top_info(window, "First Player Win!");
             window.display();
             Sleep(2500);
             board.set_points(0);
+            board.reset_duo_points();
         }
 
         auto current_time = std::chrono::high_resolution_clock::now();
@@ -381,8 +387,8 @@ void Game::game_loop_duo()
         if (!snake.lost() && !second_snake.lost())
         {
             window.clear(BACKGROUND_COLOR);
-            draw(window, snake, moving_direction);
-            draw(window, second_snake, second_moving_direction);
+            draw(window, snake, moving_direction, false);
+            draw(window, second_snake, second_moving_direction, true);
             char snake_end = board.check_snake_snake_collision(snake.get_head(), second_snake.get_head());
             if (snake_end == 'f')
                 second_snake.set_lost(true);
@@ -396,13 +402,13 @@ void Game::game_loop_duo()
     board.reset();
 }
 
-void Game::draw(sf::RenderWindow& window, Snake& snake_current, Snake::MovingDirection dir)
+void Game::draw(sf::RenderWindow& window, Snake& snake_current, Snake::MovingDirection dir, bool duo)
 {
     board.draw_board(window);
     board.draw_top_info(window, "");
     board.remove_last_snake(snake_current);
     snake_current.update(dir);
-    bool collision = board.check_fruit_snake_collision(snake_current.get_head());
+    bool collision = board.check_fruit_snake_collision(snake_current.get_head(), duo);
     bool end_game = board.check_bomb_snake_collision(snake_current.get_head());
     if (end_game) snake_current.set_lost(true);
     snake_current.update_back(collision);
