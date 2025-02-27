@@ -392,7 +392,10 @@ void Game::game_loop_duo()
             draw(window, second_snake, second_moving_direction, true);
             char snake_end = board.check_snake_snake_collision(snake.get_head(), second_snake.get_head());
             if (snake_end == 's')
+            {
                 snake.set_lost(true);
+                board.play_collision_sound();
+            }
             window.display();
         }
     }

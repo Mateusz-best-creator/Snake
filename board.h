@@ -31,8 +31,8 @@ private:
 	/*
 		Sound effects
 	*/
-	sf::SoundBuffer fruit_buffer, bomb_buffer;
-	sf::Sound fruit_sound, bomb_sound;
+	sf::SoundBuffer fruit_buffer, bomb_buffer, collision_buffer;
+	sf::Sound fruit_sound, bomb_sound, collision_sound;
 
 	/*
 		Enum characters for grid
@@ -65,6 +65,7 @@ public:
 	void update_grid_snake(Snake&);
 	void play_fruit_grabbing_sound();
 	void play_bomb_sound();
+	void play_collision_sound();
 	void start_duo_points() { this->duo_points = 0; };
 	void reset_duo_points() { this->duo_points = -1; };
 	int get_snake1counter();

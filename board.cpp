@@ -45,16 +45,22 @@ Board::Board()
 
     if (!fruit_buffer.loadFromFile("point_beep.mp3"))
     {
-        std::cerr << "Error loading sound for fruit .mp3\n";
+        std::cerr << "Error loading sound for fruit.mp3\n";
         exit(0);
     }
     if (!bomb_buffer.loadFromFile("bomb_explosion.mp3"))
     {
-        std::cerr << "Error loading sound for bomb .mp3\n";
+        std::cerr << "Error loading sound for bomb.mp3\n";
+        exit(0);
+    }
+    if (!collision_buffer.loadFromFile("collision.mp3"))
+    {
+        std::cerr << "Error loading sound for collision.mp3\n";
         exit(0);
     }
     fruit_sound.setBuffer(fruit_buffer);
     bomb_sound.setBuffer(bomb_buffer);
+    collision_sound.setBuffer(collision_buffer);
 }
 
 void Board::draw_board(sf::RenderWindow& window)
@@ -262,11 +268,14 @@ void Board::update_grid_snake(Snake& snake)
         }
         else
         {
-            if (grid[row][col] == Snake1 
+            if (grid[row][col] == Snake1
                 ///&& snake.get_tail().square_row != row &&
                 //snake.get_tail().square_col != col
                 )
+            {
                 snake.set_lost(true);
+                play_collision_sound();
+            }
             grid[row][col] = Snake2;
         }
     }
@@ -280,6 +289,11 @@ void Board::play_fruit_grabbing_sound()
 void Board::play_bomb_sound()
 {
     this->bomb_sound.play();
+}
+
+void Board::play_collision_sound()
+{
+    collision_sound.play();
 }
 
 int Board::get_snake1counter()
