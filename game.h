@@ -56,6 +56,7 @@ private:
 	};
 	std::vector<Player> playing_players;
 	int player_playing_index = -1;
+	int previous_playing_player_index = -1;
 	const int HALL_TEXT_FONT_SIZE = 35;
 
 
@@ -64,7 +65,7 @@ public:
 
 	void game_loop();
 	void game_loop_duo();
-	void draw(sf::RenderWindow& window);
+	void draw(sf::RenderWindow& window, Snake& snake, Snake::MovingDirection dir);
 	void set_moving_direction(Snake::MovingDirection);
 
 	void main_page();

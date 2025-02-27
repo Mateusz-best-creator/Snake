@@ -29,9 +29,10 @@ private:
 	const int SCREEN_SLEEP_TIME = 90;
 	Point last_snake_square;
 	bool lost_the_game = false;
+	bool ordinal;
 
 public:
-	Snake();
+	Snake(bool duo = false);
 	void reset();
 	void update(MovingDirection);
 	void update_back(bool);
@@ -40,4 +41,5 @@ public:
 	void set_lost(bool);
 	Point& get_head();
 	const std::vector<Point>& get_snake_squares() const;
+	const bool& get_ordinal() const { return ordinal; }
 };

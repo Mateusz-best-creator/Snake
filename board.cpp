@@ -1,10 +1,10 @@
 #include "board.h"
 #include <iostream>
 #include <cstdlib>
-#include <ctime> 
+#include <ctime>
 
 Board::Board()
-    : grid(20, std::vector<char>(20, '-'))
+    : grid(20, std::vector<char>(20, Empty))
 {
     this->points = 0;
     if (font.loadFromFile("Alphabet.ttf"))
@@ -42,7 +42,6 @@ Board::Board()
     points_text.setString("Points: " + std::to_string(this->points));
     points_text.setCharacterSize(SCORE_FONT_SIZE);
     points_text.setFillColor(this->font_color);
-    points_text.setPosition(sf::Vector2f(SCREEN_WIDTH / 2 - SCORE_FONT_SIZE, 30));
 
     if (!fruit_buffer.loadFromFile("point_beep.mp3"))
     {
@@ -79,14 +78,14 @@ void Board::draw_board(sf::RenderWindow& window)
     {
         for (int col = 0; col < 20; col++)
         {
-            if (grid[row][col] == 'f')
+            if (grid[row][col] == Fruit)
             {
                 float x_pos = col * SQUARE_SIZE;
                 float y_pos = 200 + row * SQUARE_SIZE;
                 fruit_square.setPosition(sf::Vector2f(x_pos, y_pos));
                 window.draw(fruit_square);
             }
-            else if (grid[row][col] == 'b')
+            else if (grid[row][col] == Bomb)
             {
                 float x_pos = col * SQUARE_SIZE;
                 float y_pos = 200 + row * SQUARE_SIZE;
@@ -103,7 +102,12 @@ void Board::draw_top_info(sf::RenderWindow& window, const std::string& msg)
 {
     points_text.setString("Points: " + std::to_string(this->points));
     if (msg.size())
+    {
         points_text.setString(msg);
+    }
+    float width = points_text.getLocalBounds().width;
+    float offset = width / 2.f;
+    points_text.setPosition(sf::Vector2f(SCREEN_WIDTH / 2.f - offset, 30));
     window.draw(points_text);
 }
 
@@ -122,7 +126,7 @@ bool Board::check_fruit_snake_collision(Point& head)
     Point snake_head = head;
     int row = snake_head.square_row;
     int col = snake_head.square_col;
-    if (grid[row][col] == 'f')
+    if (grid[row][col] == Fruit)
     {
         this->play_fruit_grabbing_sound();
         this->points += 1;
@@ -136,7 +140,7 @@ bool Board::check_bomb_snake_collision(Point& head)
     Point snake_head = head;
     int row = snake_head.square_row;
     int col = snake_head.square_col;
-    if (grid[row][col] == 'b')
+    if (grid[row][col] == Bomb)
     {
         this->play_bomb_sound();
         return true;
@@ -158,10 +162,10 @@ void Board::add_fruit()
     {
         row = (rand() % NUMBER_VERTICAL_SQUARES);
         column = (rand() % NUMBER_HORIZONTAL_SQUARES);
-        if (grid[row][column] == '-')
+        if (grid[row][column] == Empty)
             run = false;
     }
-    this->grid[row][column] = 'f';
+    this->grid[row][column] = Fruit;
     this->fruit_amount++;
 }
 
@@ -179,10 +183,10 @@ void Board::add_bomb()
     {
         row = (rand() % NUMBER_VERTICAL_SQUARES);
         column = (rand() % NUMBER_HORIZONTAL_SQUARES);
-        if (grid[row][column] == '-')
+        if (grid[row][column] == Empty)
             run = false;
     }
-    this->grid[row][column] = 'b';
+    this->grid[row][column] = Bomb;
     this->bomb_amount++;
 }
 
@@ -200,7 +204,7 @@ void Board::reset()
 {
     for (int i = 0; i < grid.size(); i++)
         for (int j = 0; j < grid[i].size(); j++)
-            grid[i][j] = '-';
+            grid[i][j] = Empty;
     this->points = 0;
     fruit_amount = bomb_amount = 0;
 }
@@ -212,7 +216,7 @@ void Board::remove_last_snake(const Snake& snake)
     {
         int row = points.at(i).square_row;
         int col = points.at(i).square_col;
-        grid[row][col] = '-';
+        grid[row][col] = Empty;
     }
 }
 
@@ -223,7 +227,10 @@ void Board::update_grid_snake(const Snake& snake)
     {
         int row = points.at(i).square_row;
         int col = points.at(i).square_col;
-        grid[row][col] = 's';
+        if (snake.get_ordinal())
+            grid[row][col] = Snake1;
+        else
+            grid[row][col] = Snake2;
     }
 }
 

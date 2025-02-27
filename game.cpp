@@ -123,6 +123,8 @@ void Game::main_page()
                         {
                             if (playing_players.at(i).name == registered_name)
                             {
+                                // Set index for previous player
+
                                 std::cout << "Logging as: " << registered_name << std::endl;
                                 player_playing_index = i;
                                 std::cout << "Index = " << player_playing_index << std::endl;
@@ -298,7 +300,7 @@ void Game::game_loop()
         if (!snake.lost())
         {
             window.clear(BACKGROUND_COLOR);
-            this->draw(window);
+            this->draw(window, snake, moving_direction);
             window.display();
         }
     }
@@ -308,21 +310,98 @@ void Game::game_loop()
 
 void Game::game_loop_duo()
 {
+    Snake second_snake(true);
+    Snake::MovingDirection second_moving_direction = Snake::RIGHT;
 
+    auto start = std::chrono::high_resolution_clock::now();
+    bool lost = false;
+    bool second_lost = false;
+
+    sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Snake - Mateusz Wieczorek");
+    while (window.isOpen() && !lost && !second_lost)
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape))
+                window.close();
+            if (event.type == sf::Event::KeyPressed)
+            {
+                // For ordinal snake
+                if (event.key.code == sf::Keyboard::Up)
+                    moving_direction = Snake::MovingDirection::TOP;
+                else if (event.key.code == sf::Keyboard::Down)
+                    moving_direction = Snake::MovingDirection::BOTTOM;
+                else if (event.key.code == sf::Keyboard::Left)
+                    moving_direction = Snake::MovingDirection::LEFT;
+                else if (event.key.code == sf::Keyboard::Right)
+                    moving_direction = Snake::MovingDirection::RIGHT;
+                
+                // For second snake
+                if (event.key.code == sf::Keyboard::W)
+                    second_moving_direction = Snake::MovingDirection::TOP;
+                else if (event.key.code == sf::Keyboard::S)
+                    second_moving_direction = Snake::MovingDirection::BOTTOM;
+                else if (event.key.code == sf::Keyboard::A)
+                    second_moving_direction = Snake::MovingDirection::LEFT;
+                else if (event.key.code == sf::Keyboard::D)
+                    second_moving_direction = Snake::MovingDirection::RIGHT;
+            }
+        }
+        if (snake.lost())
+        {
+            lost = true;
+            Sleep(500);
+            window.clear();
+            board.draw_top_info(window, "First Player Lost!");
+            window.display();
+            Sleep(2500);
+            board.set_points(0);
+        }
+        if (second_snake.lost())
+        {
+            second_lost = true;
+            Sleep(500);
+            window.clear();
+            board.draw_top_info(window, "Second Player Lost!");
+            window.display();
+            Sleep(2500);
+            board.set_points(0);
+        }
+
+        auto current_time = std::chrono::high_resolution_clock::now();
+        duration_time = std::chrono::duration_cast<std::chrono::seconds>(current_time - start).count();
+        if (duration_time > 0 && duration_time % TIME_TO_GENERATE_FRUIT == 0)
+        {
+            start = std::chrono::high_resolution_clock::now();
+            board.add_fruit();
+            board.add_bomb();
+        }
+
+        if (!snake.lost() && !second_snake.lost())
+        {
+            window.clear(BACKGROUND_COLOR);
+            draw(window, snake, moving_direction);
+            draw(window, second_snake, second_moving_direction);
+            window.display();
+        }
+    }
+    snake.reset();
+    board.reset();
 }
 
-void Game::draw(sf::RenderWindow& window)
+void Game::draw(sf::RenderWindow& window, Snake& snake_current, Snake::MovingDirection dir)
 {
     board.draw_board(window);
     board.draw_top_info(window, "");
-    board.remove_last_snake(snake);
-    snake.update(moving_direction);
-    bool collision = board.check_fruit_snake_collision(snake.get_head());
-    bool end_game = board.check_bomb_snake_collision(snake.get_head());
-    if (end_game) snake.set_lost(true);
-    snake.update_back(collision);
-    board.update_grid_snake(snake);
-    snake.draw(window);
+    board.remove_last_snake(snake_current);
+    snake_current.update(dir);
+    bool collision = board.check_fruit_snake_collision(snake_current.get_head());
+    bool end_game = board.check_bomb_snake_collision(snake_current.get_head());
+    if (end_game) snake_current.set_lost(true);
+    snake_current.update_back(collision);
+    board.update_grid_snake(snake_current);
+    snake_current.draw(window);
 }
 
 void Game::set_moving_direction(Snake::MovingDirection d)

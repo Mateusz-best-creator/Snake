@@ -1,10 +1,20 @@
 #include "snake.h"
 #include <windows.h>
 #include <iostream>
-Snake::Snake()
+Snake::Snake(bool duo)
 {
-    this->snake_squares = { {10,8}, {10, 9}, {10, 10} };
-    this->current_moving_direction = MovingDirection::RIGHT;
+    if (!duo)
+    {
+        this->snake_squares = { {8,8}, {8, 9}, {8, 10} };
+        this->current_moving_direction = MovingDirection::RIGHT;
+        ordinal = true;
+    }
+    else
+    {
+        this->snake_squares = { {12,10}, {12, 9}, {12, 8} };
+        this->current_moving_direction = MovingDirection::LEFT;
+        ordinal = false;
+    }
     head = snake_squares[snake_squares.size() - 1];
 }
 
@@ -74,7 +84,10 @@ void Snake::draw(sf::RenderWindow& window)
         float y_pos = 200 + snake_squares[i].square_row * SQUARE_SIZE;
 
         snake[i].setPosition(x_pos, y_pos);
-        snake[i].setFillColor(sf::Color::Blue);
+        if (ordinal)
+            snake[i].setFillColor(sf::Color::Blue);
+        else
+            snake[i].setFillColor(sf::Color(245, 29, 60, 255));
         window.draw(snake[i]);
     }
 }

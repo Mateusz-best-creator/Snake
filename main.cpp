@@ -6,3 +6,4 @@ int main()
     Game game;
     game.main_page();
 }
+    

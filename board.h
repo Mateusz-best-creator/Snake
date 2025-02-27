@@ -34,6 +34,18 @@ private:
 	sf::SoundBuffer fruit_buffer, bomb_buffer;
 	sf::Sound fruit_sound, bomb_sound;
 
+	/*
+		Enum characters for grid
+	*/
+	enum GridCharacters
+	{
+		Empty = 'e',
+		Snake1 = 's',
+		Snake2 = 'd',
+		Fruit = 'f',
+		Bomb = 'b'
+	};
+
 public:
 	Board();
 	void draw_board(sf::RenderWindow&);
