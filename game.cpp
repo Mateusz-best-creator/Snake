@@ -214,6 +214,7 @@ void Game::main_page()
 
         case States::START:
             window.close();
+            snake.reset();
             this->game_loop();
             window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Snake - Mateusz Wieczorek"); // Reopen the window
             current_state = States::DEFAULT;
@@ -390,8 +391,6 @@ void Game::game_loop_duo()
             draw(window, snake, moving_direction, false);
             draw(window, second_snake, second_moving_direction, true);
             char snake_end = board.check_snake_snake_collision(snake.get_head(), second_snake.get_head());
-            if (snake_end == 'f')
-                second_snake.set_lost(true);
             if (snake_end == 's')
                 snake.set_lost(true);
             window.display();

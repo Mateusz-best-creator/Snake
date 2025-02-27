@@ -20,7 +20,7 @@ Snake::Snake(bool duo)
 
 void Snake::reset()
 {
-    this->snake_squares = { {10,8}, {10, 9}, {10, 10} };
+    this->snake_squares = { {8,8}, {8, 9}, {8, 10} };
     this->current_moving_direction = MovingDirection::RIGHT;
     head = snake_squares[snake_squares.size() - 1];
     this->lost_the_game = false;
@@ -128,4 +128,14 @@ void Snake::set_lost(bool lost)
 void Snake::set_sleep(int s)
 {
     SCREEN_SLEEP_TIME = s;
+}
+
+int Snake::get_length()
+{
+    return snake_squares.size();
+}
+
+Point& Snake::get_tail()
+{
+    return snake_squares[snake_squares.size() - 1];
 }

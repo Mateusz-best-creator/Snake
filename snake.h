@@ -40,7 +40,9 @@ public:
 	bool lost();
 	void set_lost(bool);
 	Point& get_head();
+	Point& get_tail();
 	const std::vector<Point>& get_snake_squares() const;
 	const bool& get_ordinal() const { return ordinal; }
 	void set_sleep(int);
+	int get_length();
 };

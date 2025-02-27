@@ -45,6 +45,7 @@ private:
 		Fruit = 'f',
 		Bomb = 'b'
 	};
+	int snake1counter = 3, snake2counter = 0;
 
 
 public:
@@ -61,9 +62,11 @@ public:
 	void set_points(int);
 	void reset();
 	void remove_last_snake(const Snake&);
-	void update_grid_snake(const Snake&);
+	void update_grid_snake(Snake&);
 	void play_fruit_grabbing_sound();
 	void play_bomb_sound();
 	void start_duo_points() { this->duo_points = 0; };
 	void reset_duo_points() { this->duo_points = -1; };
+	int get_snake1counter();
+	int get_snake2counter();
 };

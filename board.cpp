@@ -134,10 +134,12 @@ bool Board::check_fruit_snake_collision(Point& head, bool duo)
         if (!duo)
         {
             this->points += 1;
+            this->snake2counter;
         }
         else
         {
             this->duo_points += 1;
+            this->snake1counter += 1;
         }
         return true;
     }
@@ -233,6 +235,7 @@ void Board::reset()
     this->points = 0;
     fruit_amount = bomb_amount = 0;
     duo_points = -1;
+    snake1counter = snake2counter = 3;
 }
 
 void Board::remove_last_snake(const Snake& snake)
@@ -246,7 +249,7 @@ void Board::remove_last_snake(const Snake& snake)
     }
 }
 
-void Board::update_grid_snake(const Snake& snake)
+void Board::update_grid_snake(Snake& snake)
 {
     std::vector<Point> points = snake.get_snake_squares();
     for (int i = 0; i < snake.get_snake_squares().size(); i++)
@@ -254,9 +257,18 @@ void Board::update_grid_snake(const Snake& snake)
         int row = points.at(i).square_row;
         int col = points.at(i).square_col;
         if (snake.get_ordinal())
+        {
             grid[row][col] = Snake1;
+        }
         else
+        {
+            if (grid[row][col] == Snake1 
+                ///&& snake.get_tail().square_row != row &&
+                //snake.get_tail().square_col != col
+                )
+                snake.set_lost(true);
             grid[row][col] = Snake2;
+        }
     }
 }
 
@@ -268,4 +280,14 @@ void Board::play_fruit_grabbing_sound()
 void Board::play_bomb_sound()
 {
     this->bomb_sound.play();
+}
+
+int Board::get_snake1counter()
+{
+    return snake1counter;
+}
+
+int Board::get_snake2counter()
+{
+    return snake2counter;
 }
