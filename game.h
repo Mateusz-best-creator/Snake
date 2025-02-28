@@ -35,6 +35,7 @@ private:
 		HALL_OF_FAME = 'h',
 		INSTRUCTION = 'i',
 		DEFAULT = 'd',
+		SIMULATION = 'm'
 	};
 
 	sf::RectangleShape instruction_rectangle{ sf::Vector2f(SCREEN_WIDTH - 100, SCREEN_HEIGHT - 200) };
@@ -75,5 +76,6 @@ public:
 	void instruction_page(sf::RenderWindow&);
 	void registration_page(sf::RenderWindow&);
 	void hall_of_fame_page(sf::RenderWindow&);
+	void simulation();
 };
 

@@ -15,18 +15,23 @@ Game::Game()
     sf::RectangleShape r3(sf::Vector2f(RECTANGLE_WIDTH, RECTANGLE_HEIGHT));
     sf::RectangleShape r4(sf::Vector2f(RECTANGLE_WIDTH, RECTANGLE_HEIGHT));
     sf::RectangleShape r5(sf::Vector2f(RECTANGLE_WIDTH, RECTANGLE_HEIGHT));
+    sf::RectangleShape r6(sf::Vector2f(RECTANGLE_WIDTH, RECTANGLE_HEIGHT));
+    
     const float verticalMargin = 40.f;
+
     r1.setPosition(sf::Vector2f(SCREEN_WIDTH / 2 - RECTANGLE_WIDTH / 2, 100));
     r2.setPosition(sf::Vector2f(SCREEN_WIDTH / 2 - RECTANGLE_WIDTH / 2, r1.getPosition().y + RECTANGLE_HEIGHT + verticalMargin));
     r3.setPosition(sf::Vector2f(SCREEN_WIDTH / 2 - RECTANGLE_WIDTH / 2, r2.getPosition().y + RECTANGLE_HEIGHT + verticalMargin));
     r4.setPosition(sf::Vector2f(SCREEN_WIDTH / 2 - RECTANGLE_WIDTH / 2, r3.getPosition().y + RECTANGLE_HEIGHT + verticalMargin));
     r5.setPosition(sf::Vector2f(SCREEN_WIDTH / 2 - RECTANGLE_WIDTH / 2, r4.getPosition().y + RECTANGLE_HEIGHT + verticalMargin));
+    r6.setPosition(sf::Vector2f(SCREEN_WIDTH / 2 - RECTANGLE_WIDTH / 2, r5.getPosition().y + RECTANGLE_HEIGHT + verticalMargin));
 
     start_rectangles_options.push_back(r1);
     start_rectangles_options.push_back(r2);
     start_rectangles_options.push_back(r3);
     start_rectangles_options.push_back(r4);
     start_rectangles_options.push_back(r5);
+    start_rectangles_options.push_back(r6);
 
     for (auto& e : start_rectangles_options)
     {
@@ -38,10 +43,15 @@ Game::Game()
         exit(0);
 
     int i = 0;
-    std::string texts_strings[5] = { "Start - solo (1)", "Start - duo (2)", "Register (3)", "Hall Of Fame (4)", "Instructions (5)"};
-    int y_pos[5] = { 105, 225, 345, 462, 582 };
+    std::string texts_strings[6] = { "Start - solo (1)", 
+        "Start - duo (2)", 
+        "Register (3)", 
+        "Hall Of Fame (4)",
+        "Simulation (5)",
+        "Instructions (6)"};
+    int y_pos[6] = { 105, 225, 345, 462, 582, 702 };
 
-    for (int i = 0; i < start_rectangles_options.size(); ++i)
+    for (int i = 0; i < start_rectangles_options.size(); i++)
     {
         texts.push_back(sf::Text());
         texts[i].setFont(font);
@@ -70,6 +80,8 @@ Game::Game()
         "Play in solo or duo mode.\n"
         "Collect foods and avoid bombs.\n"
         "Register yourself and compete with others.\n"
+        "See simulation of multiple snakes fighting\n"
+        "with each other!\n"
         "Click 'Escape' to go back.";
     instruction_text.setString(t);
     sf::FloatRect textBounds = instruction_text.getLocalBounds();
@@ -176,6 +188,9 @@ void Game::main_page()
                     current_state = States::HALL_OF_FAME;
                     break;
                 case sf::Keyboard::Num5:
+                    current_state = States::SIMULATION;
+                    break;
+                case sf::Keyboard::Num6:
                     current_state = States::INSTRUCTION;
                     break;
                 case sf::Keyboard::Escape:
@@ -237,6 +252,11 @@ void Game::main_page()
 
         case States::HALL_OF_FAME:
             this->hall_of_fame_page(window);
+            break;
+
+        case States::SIMULATION:
+            simulation();
+            current_state = States::DEFAULT;
             break;
 
         default:
@@ -364,7 +384,7 @@ void Game::game_loop_duo()
             board.set_points(0);
             board.reset_duo_points();
         }
-        if (second_snake.lost())
+        else if (second_snake.lost())
         {
             second_lost = true;
             Sleep(500);
