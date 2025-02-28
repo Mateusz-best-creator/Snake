@@ -2,10 +2,6 @@
 
 #include <SFML/Graphics.hpp>
 
-const int SQUARE_SIZE = 35;
-const int NUMBER_VERTICAL_SQUARES = 20;
-const int NUMBER_HORIZONTAL_SQUARES = 20;
-
 struct Point
 {
 	int square_row, square_col;
@@ -34,9 +30,9 @@ private:
 public:
 	Snake(bool duo = false);
 	void reset();
-	void update(MovingDirection);
+	void update(MovingDirection, int, int);
 	void update_back(bool);
-	void draw(sf::RenderWindow&);
+	void draw(sf::RenderWindow&, int);
 	bool lost();
 	void set_lost(bool);
 	Point& get_head();

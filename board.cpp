@@ -3,9 +3,12 @@
 #include <cstdlib>
 #include <ctime>
 
-Board::Board()
-    : grid(20, std::vector<char>(20, Empty))
+Board::Board(int board_size)
+    : grid(board_size, std::vector<char>(board_size, Empty))
 {
+    BOARD_SIZE = NUMBER_VERTICAL_SQUARES = NUMBER_HORIZONTAL_SQUARES = board_size;
+    SQUARE_HEIGHT = (SCREEN_HEIGHT - 200) / NUMBER_VERTICAL_SQUARES;
+    SQUARE_WIDTH = SCREEN_WIDTH / NUMBER_HORIZONTAL_SQUARES;
     this->points = 0;
     if (font.loadFromFile("Alphabet.ttf"))
         std::cout << "Succesfully load Alphabet font..." << std::endl;
@@ -80,9 +83,9 @@ void Board::draw_board(sf::RenderWindow& window)
         horizontal_lines[i * 2] = sf::Vertex(sf::Vector2f(x_pos, 200));
         horizontal_lines[i * 2 + 1] = sf::Vertex(sf::Vector2f(x_pos, SCREEN_HEIGHT));
     }
-    for (int row = 0; row < 20; row++)
+    for (int row = 0; row < BOARD_SIZE; row++)
     {
-        for (int col = 0; col < 20; col++)
+        for (int col = 0; col < BOARD_SIZE; col++)
         {
             if (grid[row][col] == Fruit)
             {

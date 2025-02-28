@@ -59,8 +59,10 @@ private:
 	int player_playing_index = -1;
 	int previous_playing_player_index = -1;
 	const int HALL_TEXT_FONT_SIZE = 35;
-	const int DUO_SLEEP_TIME = 35;
-	const int SINGLE_SLEEP_TIME = 90;
+
+
+	const int DUO_SLEEP_TIME = 30;
+	const int SINGLE_SLEEP_TIME = 70;
 	const int EXPERIMENT_SLEEP_TIME = 0;
 
 

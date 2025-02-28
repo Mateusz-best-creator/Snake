@@ -429,13 +429,15 @@ void Game::draw(sf::RenderWindow& window, Snake& snake_current, Snake::MovingDir
     board.draw_board(window);
     board.draw_top_info(window, "");
     board.remove_last_snake(snake_current);
-    snake_current.update(dir);
+    snake_current.update(dir, board.get_nh_squares(), board.get_nv_squares());
     bool collision = board.check_fruit_snake_collision(snake_current.get_head(), duo);
     bool end_game = board.check_bomb_snake_collision(snake_current.get_head());
     if (end_game) snake_current.set_lost(true);
     snake_current.update_back(collision);
     board.update_grid_snake(snake_current);
-    snake_current.draw(window);
+
+    // Draw the snake on the board
+    snake_current.draw(window, board.get_square_size());
 }
 
 void Game::set_moving_direction(Snake::MovingDirection d)

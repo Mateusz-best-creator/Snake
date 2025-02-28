@@ -26,7 +26,7 @@ void Snake::reset()
     this->lost_the_game = false;
 }
 
-void Snake::update(MovingDirection d)
+void Snake::update(MovingDirection d, int NUMBER_HORIZONTAL_SQUARES, int NUMBER_VERTICAL_SQUARES)
 {
     if (!(current_moving_direction == MovingDirection::LEFT && d == MovingDirection::RIGHT ||
         current_moving_direction == MovingDirection::RIGHT && d == MovingDirection::LEFT ||
@@ -72,16 +72,16 @@ void Snake::update(MovingDirection d)
     this->snake_squares.push_back(new_point);
 }
 
-void Snake::draw(sf::RenderWindow& window)
+void Snake::draw(sf::RenderWindow& window, int square_size)
 {
     Sleep(SCREEN_SLEEP_TIME);
     std::vector<sf::RectangleShape> snake;
     for (int i = 0; i < snake_squares.size(); i++)
     {
-        snake.push_back(sf::RectangleShape(sf::Vector2f(SQUARE_SIZE, SQUARE_SIZE)));
+        snake.push_back(sf::RectangleShape(sf::Vector2f(square_size, square_size)));
 
-        float x_pos = snake_squares[i].square_col * SQUARE_SIZE;
-        float y_pos = 200 + snake_squares[i].square_row * SQUARE_SIZE;
+        float x_pos = snake_squares[i].square_col * square_size;
+        float y_pos = 200 + snake_squares[i].square_row * square_size;
 
         snake[i].setPosition(x_pos, y_pos);
         if (ordinal)

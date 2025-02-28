@@ -10,8 +10,12 @@ const sf::Color BACKGROUND_COLOR(144, 238, 144, 255);
 class Board
 {
 private:
-	const double SQUARE_HEIGHT = (SCREEN_HEIGHT - 200) / NUMBER_VERTICAL_SQUARES;
-	const double SQUARE_WIDTH = SCREEN_WIDTH / NUMBER_HORIZONTAL_SQUARES;
+	const int SQUARE_SIZE = 35;
+	int NUMBER_VERTICAL_SQUARES = 20;
+	int NUMBER_HORIZONTAL_SQUARES = 20;
+	int BOARD_SIZE;
+	double SQUARE_HEIGHT;
+	double SQUARE_WIDTH;
 
 	const int SCORE_FONT_SIZE = 100;
 	int points, duo_points = -1;
@@ -49,7 +53,7 @@ private:
 
 
 public:
-	Board();
+	Board(int board_size = 20);
 	void draw_board(sf::RenderWindow&);
 	void draw_top_info(sf::RenderWindow&, const std::string&);
 	bool check_fruit_snake_collision(Point& head, bool duo = false);
@@ -70,4 +74,8 @@ public:
 	void reset_duo_points() { this->duo_points = -1; };
 	int get_snake1counter();
 	int get_snake2counter();
+
+	int get_square_size() { return SQUARE_SIZE; }
+	int get_nv_squares() { return NUMBER_VERTICAL_SQUARES; }
+	int get_nh_squares() { return NUMBER_HORIZONTAL_SQUARES; }
 };
