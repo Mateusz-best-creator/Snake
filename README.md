@@ -6,6 +6,11 @@
 2. **Open the solution file** in Microsoft Visual Studio
 3. **Run the project** by clicking the start button or pressing `F5`
 4. **If you encounter issues, follow these steps:**
+   - Watch this totorial video how to setup SFML: https://www.youtube.com/watch?v=lFzpkvrscs4
+   - Copy appropriate files:
+   - To x64/Debug: openal32.dll sfml-audio-d-2.dll sfml-graphics-d-2.dll sfml-system-d-2.dll sfml-window-d-2.dll
+   - To x64/Release: openal32.dll sfml-audio-2.dll sfml-graphics-2.dll sfml-system-2.dll sfml-window-2.dll 
+   - `Then adjust what you have to type by following these:`
    - Go to **Project Properties**
    - Navigate to **C/C++ → General** and set **Additional Include Directories** to:
      ```
@@ -19,7 +24,7 @@
      ```
      sfml-system.lib; sfml-window.lib; sfml-graphics.lib; sfml-audio.lib
      ```
-5. **If the above steps do not work,** please watch a tutorial on setting up SFML and copy the code from this repository.
+6. **If the above steps do not work,** please watch a tutorial on setting up SFML and copy the code from this repository.
 
 ## How to Play
 
